@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { AppService } from './app.service';
 import { VideoController } from './video/video.controller';
 import { VideoWorker } from './video/video.worker';
+import { VideoQueueEventsListener } from './video/video-queue.events';
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { VideoWorker } from './video/video.worker';
     }),
   ],
   controllers: [VideoController],
-  providers: [VideoWorker],
+  providers: [VideoWorker, VideoQueueEventsListener],
 })
 export class AppModule {}
