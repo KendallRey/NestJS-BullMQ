@@ -9,12 +9,10 @@ export class VideoWorker extends WorkerHost {
     switch (job.name) {
       case 'process':
         console.log('Start processing video');
-        this.runTaskWithProgress(job);
-        break;
+        return await this.runTaskWithProgress(job);
       case 'compress':
         console.log('Start compressing video');
-        this.runTaskWithProgress(job);
-        break;
+        return await this.runTaskWithProgress(job);
       default:
         throw new Error('Failed: unknown job!');
     }
@@ -22,10 +20,11 @@ export class VideoWorker extends WorkerHost {
 
   async runTaskWithProgress(job: Job) {
     for (const step of STEPS) {
-      await new Promise((res) => setTimeout(res, 1200));
+      await new Promise((res) => setTimeout(res, 200));
       const progress = Math.ceil((Number(step) / STEPS.length) * 100);
       job.updateProgress(progress);
     }
+    return job.data;
   }
 
   @OnWorkerEvent('active')
