@@ -9,7 +9,18 @@ export class VideoController {
   @Post('process')
   async processVideo(@Body() createDto: Record<string, any>) {
     await this.videoQueue.add(
-      'video',
+      'process',
+      {
+        ...createDto,
+      },
+      {},
+    );
+  }
+
+  @Post('compress')
+  async compressVideo(@Body() createDto: Record<string, any>) {
+    await this.videoQueue.add(
+      'compress',
       {
         ...createDto,
       },

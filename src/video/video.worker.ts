@@ -6,6 +6,21 @@ const STEPS = [1, 2, 3, 4, 5];
 @Processor('video', { concurrency: 3 })
 export class VideoWorker extends WorkerHost {
   async process(job: Job) {
+    switch (job.name) {
+      case 'process':
+        console.log('Start processing video');
+        this.runTaskWithProgress(job);
+        break;
+      case 'compress':
+        console.log('Start compressing video');
+        this.runTaskWithProgress(job);
+        break;
+      default:
+        throw new Error('Failed: unknown job!');
+    }
+  }
+
+  async runTaskWithProgress(job: Job) {
     for (const step of STEPS) {
       await new Promise((res) => setTimeout(res, 1200));
       const progress = Math.ceil((Number(step) / STEPS.length) * 100);
