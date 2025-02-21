@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { VideoController } from './video/video.controller';
+import { VideoWorker } from './video/video.worker';
 
 @Module({
   imports: [
@@ -11,8 +12,11 @@ import { AppService } from './app.service';
         port: 6379,
       },
     }),
+    BullModule.registerQueue({
+      name: 'video',
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [VideoController],
+  providers: [VideoWorker],
 })
 export class AppModule {}
