@@ -1,9 +1,35 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
-@Processor('video')
+const STEPS = [1, 2, 3, 4, 5];
+
+@Processor('video', { concurrency: 3 })
 export class VideoWorker extends WorkerHost {
-  async process(job: Job, token?: string) {
-    console.log(`New Job: ${job.id}`, job.data);
+  async process(job: Job) {
+    for (const step of STEPS) {
+      await new Promise((res) => setTimeout(res, 1200));
+      const progress = Math.ceil((Number(step) / STEPS.length) * 100);
+      job.updateProgress(progress);
+    }
+  }
+
+  @OnWorkerEvent('active')
+  onAdded(job: Job) {
+    console.log(`Job active: ${job.id}`, job.data);
+  }
+
+  @OnWorkerEvent('progress')
+  onProgress(job: Job) {
+    console.log(`Job progress: ${job.id}:`, `${job.progress}%`);
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    console.log(`Job completed: ${job.id}`);
+  }
+
+  @OnWorkerEvent('failed')
+  onFailed(job: Job) {
+    console.log(`Job failed: ${job.id}`);
   }
 }

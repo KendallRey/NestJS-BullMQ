@@ -11,6 +11,12 @@ import { VideoWorker } from './video/video.worker';
         host: 'localhost',
         port: 6379,
       },
+      defaultJobOptions: {
+        attempts: 3,
+        removeOnComplete: 3,
+        removeOnFail: 6,
+        backoff: 2000,
+      },
     }),
     BullModule.registerQueue({
       name: 'video',
