@@ -1,18 +1,13 @@
 import { InjectQueue } from '@nestjs/bullmq';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { Job, Queue, QueueEvents } from 'bullmq';
 
 @Controller('video')
 export class VideoController {
-  private queueEvents: QueueEvents;
-  constructor(@InjectQueue('video') private readonly videoQueue: Queue) {
-    this.queueEvents = new QueueEvents('video', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
-  }
+  constructor(
+    @InjectQueue('video') private readonly videoQueue: Queue,
+    @Inject('VIDEO_QUEUE_EVENTS') private readonly queueEvents: QueueEvents,
+  ) {}
 
   @Post('process')
   async processVideo(@Body() createDto: Record<string, any>) {
@@ -39,3 +34,4 @@ export class VideoController {
     );
   }
 }
+

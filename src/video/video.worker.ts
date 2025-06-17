@@ -20,7 +20,7 @@ export class VideoWorker extends WorkerHost {
 
   async runTaskWithProgress(job: Job) {
     for (const step of STEPS) {
-      await new Promise((res) => setTimeout(res, 200));
+      await new Promise((res) => setTimeout(res, 1500));
       const progress = Math.ceil((Number(step) / STEPS.length) * 100);
       job.updateProgress(progress);
     }
